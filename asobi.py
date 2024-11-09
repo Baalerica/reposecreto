@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-import 
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 app.secret_key = 'secret_key'
 
-uri = 'mongodbclave'
+uri = 'uri = 'mongodb+srv://estradaf809:gmRuDE6tWCmf2B7A@cluster0.8tkxz.mongodb.net/jalawei?retryWrites=true&w=majority&appName=Cluster0'
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['inventario']
 productos_collection = db['productos']
@@ -28,7 +28,8 @@ def add_to_cart(product_id):
 def cart():
     cart_items = []
     if 'cart' in session:
-        product_ids = session['cart']
+        # Convertir los IDs de productos en ObjectId para la consulta en MongoDB
+        product_ids = [ObjectId(id) for id in session['cart']]
         cart_items = list(productos_collection.find({'_id': {'$in': product_ids}}))
     return render_template('cart.html', cart_items=cart_items)
 
